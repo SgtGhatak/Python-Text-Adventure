@@ -4,7 +4,35 @@ from classes import *
 connect = sqlite3.connect('playerData.db')
 cursor = connect.cursor()
 
-player1 = Player('Bob', 100, 20)
+player1 = Player('1', 'Bob', 1000, 20)
+
+cursor.execute(
+    ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='player' ''')
+
+if cursor.fetchone()[0] == 1:
+    print('Save file found!')
+else:
+    x = input('No save file found, do you want to create a new save?\n')
+    x.lower
+    if(x != "no"):
+        cursor.execute('''CREATE TABLE player
+                        (id     integer     primary key     not null,
+                        name    text,
+                        hp      integer,
+                        mp      integer)
+                    ''')
+
+        cursor.execute("INSERT INTO player VALUES ('1','Player','100','50')")
+        connect.commit()
+
+        print('Save file created!\n')
+    else:
+        exit()
+
+x = input('update?')
+if (x == 'yes'):
+    cursor.execute("UPDATE player SET hp = (?) WHERE id=1", (player1.hp,))
+
 
 # # Create table
 # cursor.execute('''CREATE TABLE player
@@ -26,10 +54,6 @@ player1 = Player('Bob', 100, 20)
 cursor.execute("SELECT * FROM player")
 print(cursor.fetchall())
 
-load = input("Who do you want to load?")
-
-cursor.execute(("SELECT {} FROM player").format(load))
-print(cursor.fetchone())
 
 # Commit changes and close
 connect.commit()
