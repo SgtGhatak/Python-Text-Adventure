@@ -33,6 +33,13 @@ x = input('update?')
 if (x == 'yes'):
     cursor.execute("UPDATE player SET hp = (?) WHERE id=1", (player1.hp,))
 
+cursor.execute("SELECT * FROM player")
+data = cursor.fetchone()
+print(data)
+
+player2 = Player(data[0], data[1], data[2], data[3])
+
+print("PLAYER 2 " + player2.name, player2.hp, player2.mp)
 
 # # Create table
 # cursor.execute('''CREATE TABLE player
