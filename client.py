@@ -1,62 +1,35 @@
 import sqlite3
 from classes import *
+from database import *
+
+# Load data from the database into the player class
+
+data = Load()
+player = Player(data[0], data[1], data[2], data[3], data[4],
+                data[5], data[6], data[7], data[8], data[9])
+
+# Print out the data from the database
 
 connect = sqlite3.connect('playerData.db')
 cursor = connect.cursor()
 
-player1 = Player('1', 'Bob', 1000, 20)
-
-cursor.execute(
-    ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='player' ''')
-
-if cursor.fetchone()[0] == 1:
-    print('Save file found!')
-else:
-    x = input('No save file found, do you want to create a new save?\n')
-    x.lower
-    if(x != "no"):
-        cursor.execute('''CREATE TABLE player
-                        (id     integer     primary key     not null,
-                        name    text,
-                        hp      integer,
-                        mp      integer)
-                    ''')
-
-        cursor.execute("INSERT INTO player VALUES ('1','Player','100','50')")
-        connect.commit()
-
-        print('Save file created!\n')
-    else:
-        exit()
-
-x = input('update?')
-if (x == 'yes'):
-    cursor.execute("UPDATE player SET hp = (?) WHERE id=1", (player1.hp,))
-
 cursor.execute("SELECT * FROM player")
-data = cursor.fetchone()
-print(data)
+print(cursor.fetchall())
 
-player2 = Player(data[0], data[1], data[2], data[3])
+connect.commit()
+connect.close()
 
-print("PLAYER 2 " + player2.name, player2.hp, player2.mp)
+player.hp -= 10
 
-# # Create table
-# cursor.execute('''CREATE TABLE player
-#                     (name text,
-#                     hp integer,
-#                     mp integer)''')
+# Save the data from the player class into the database
 
-# # Commit changes and close
-# connect.commit()
-# connect.close()
+Save(player.id, player.vigor, player.focus, player.strength,
+     player.dexterity, player. intelligence, player.faith, player.hp, player.mp)
 
-# Insert data into table
-# cursor.execute("INSERT INTO player VALUES ('Player','100','50')")
+# Print out the data from the database
 
-# save data
-# cursor.execute("INSERT INTO player VALUES (:name, :hp, :mp)",
-#                {'name': player1.name, 'hp': player1.hp, 'mp': player1.mp})
+connect = sqlite3.connect('playerData.db')
+cursor = connect.cursor()
 
 cursor.execute("SELECT * FROM player")
 print(cursor.fetchall())
@@ -65,11 +38,5 @@ print(cursor.fetchall())
 # Commit changes and close
 connect.commit()
 connect.close()
-
-# connect = sqlite3.connect('playerData.db')
-# cursor = connect.cursor()
-
-# rows = cursor.execute("SELECT name, hp, mp").fetchall()
-# print(rows)
 
 print("hello world")
