@@ -33,9 +33,3 @@ class Enemy:
         self.intelligence = intelligence
         self.faith = faith
         self.difficulty = difficulty
-
-    def checkIfDead(self):
-        if(self.hp <= 0):
-            return 1
-        else:
-            return 0
