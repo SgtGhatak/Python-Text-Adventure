@@ -5,10 +5,14 @@ def Load():
     connect = sqlite3.connect('playerData.db')
     cursor = connect.cursor()
     cursor.execute(
-        ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='player' ''')
+        ''' SELECT count(name) 
+        FROM sqlite_master 
+        WHERE type='table' 
+        AND name='player' ''')
     if cursor.fetchone()[0] == 1:
         print('Save file found!\n')
         while True:
+            print("\U0001F7E9")
             x = input('''Would you like to load your save?\n
 1. Yes\n
 2. No\n\n''')
