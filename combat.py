@@ -1,6 +1,19 @@
 from classes import *
 import os
+# os friendly import so that 'clear' works on widows and linux
 os.system('cls' if os.name == 'nt' else 'clear')
+
+player_choice_input_map = {
+    '1': 'Attack',
+    '2': 'Magic',
+    '3': 'Item',
+    '4': 'Flee'
+}
+
+"""
+initialised the enemy's current HP tracker (as enemy class only holds HP stats) 
+then runs the actual combat function.
+"""
 
 
 def combat_init(player, enemy):
@@ -11,8 +24,34 @@ def combat_init(player, enemy):
     return
 
 
+"""
+The actual combat function.
+
+Runs the combat UI function to display the text GUI to display the player's name 
+and hp and the enemy's name and hp.
+Then checks the player's and enemy's HP to see if they are dead
+    If player is dead, prints out the message saying they're dead and returns -1 
+    to indicate player death.
+    If enemy is dead, prints out message saying the enemy is dead and returns 1 
+    to indicate enemy has died.
+
+Then runs the player choice function, and stores the result, as to run the correct 
+function afters once the player has chosen their choice.
+    If the player attacks, runs the attack function.
+    If the player uses magic, runs the magic function.
+    If the player uses an item, runs the item function.
+    If the player flees, runs the flee function and returns and exits if the player 
+    is successful.
+
+Once the player's choice has been resolves, waits for input, to ensure the user has 
+player has read everything and then clears the screen to prevent clutter.
+
+The function is then called recursively again until either the player or enemy
+has died or if the player chooses to flee.
+"""
+
+
 def combat(player, enemy, current_enemy_hp):
-    os.system('clear')
     combat_ui(player, enemy, current_enemy_hp)
 
     if (player.checkIfDead() == 1):
@@ -41,6 +80,15 @@ def combat(player, enemy, current_enemy_hp):
     combat(player, enemy, current_enemy_hp)
 
 
+"""
+Displays the player choices and ensures the player has provided valid input
+
+Prints out a basic text GUI to display the options the player can make.
+Ensures the input provided is valid by checking the input to an input mapping
+dictionary
+"""
+
+
 def player_choices(player):
     print("What would " + player.name + " like to do?\n")
     print("1. Attack     3. Item\n")
@@ -48,13 +96,38 @@ def player_choices(player):
     player_input = str(input().lower())
     print("\n")
 
-    if (player_input != '1' and player_input != 'attack' and player_input != '2' and player_input != 'magic' and player_input != '3' and player_input != 'item' and player_input != '4' and player_input != 'flee'):
+    if player_input not in player_choice_input_map:
         print("Invalid choice, please choose again.\n")
-        player_choices(player)
+    else:
+        player_input = player_choice_input_map[player_input]
+
     return player_input
 
 
+"""
+Displays the text based combat GUI
+
+Overall function is to display the names, hps and sets of unicode characters
+to represent the hp bars of both the enemy and the player.
+
+Calculates the maximum hp of the player and enemy using their stats and the
+size that each "box" or unicode character should represent. The maximum amount 
+of boxes that should be displayed is calculated off the maximum hp and the size
+of the boxes. The hp boxes that should be shown are then calculated by multiplying
+the current hp by the box size, which stores the appropriate amount of unicode
+characters into the respect variable. The remaining blank boxes are then calculated
+after by subtracting the maximum amount of boxes by the stores boxes that represents
+the current hp. This is then multiplayed by a blank character and stored, as to fill
+in the blanks for the missing HP
+
+After the calculations are done, a basic text GUI is printed out using the stored
+variables, with the enemy's details being printed on top and the player's details
+being printed at the bottom of the GUI
+"""
+
+
 def combat_ui(player, enemy, current_enemy_hp):
+    # player's calculations
     max_player_hp = player.vigor*10
     player_hp_box = (player.vigor*10)/10
 
@@ -65,6 +138,7 @@ def combat_ui(player, enemy, current_enemy_hp):
     player_hp_display = '\U0001F7E9' * current_player_boxes
     player_remaining_hp_display = ' ' * player_remaining_hp
 
+    # enemy's calculations
     max_enemy_hp = enemy.vigor*10
     enemy_hp_box = (enemy.vigor*10)/10
 
@@ -83,12 +157,12 @@ def combat_ui(player, enemy, current_enemy_hp):
     print(str(player_hp_display) + str(player_remaining_hp_display) + "\n")
     print("--------------------------------------------------------------------\n")
 
-    if (player.checkIfDead() == 1):
-        return 2
-    elif (current_enemy_hp <= 0):
-        return 1
-    else:
-        return 0
+
+"""
+The function to calculate the player's weapon damage
+
+WIP
+"""
 
 
 def player_attack_weapon(player, enemy, current_enemy_hp):
@@ -103,6 +177,13 @@ def player_attack_weapon(player, enemy, current_enemy_hp):
     return current_enemy_hp
 
 
+"""
+The function to calculate the player's magic damage
+
+WIP
+"""
+
+
 def player_attack_magic(player, enemy, current_enemy_hp):
     player_damage = player.intelligence
 
@@ -113,6 +194,13 @@ def player_attack_magic(player, enemy, current_enemy_hp):
     current_enemy_hp -= player_damage
 
     return current_enemy_hp
+
+
+"""
+The function to calculate the player's item usage
+
+WIP
+"""
 
 
 def player_use_item(player):
@@ -130,6 +218,12 @@ def player_use_item(player):
     return
 
 
+"""
+The function to calculate the result of the player trying to flee
+WIP
+"""
+
+
 def player_flee(player):
 
     confirm = input(
@@ -143,3 +237,11 @@ def player_flee(player):
 
     print("Invalid choice, please choose again.\n")
     player_flee(player)
+
+
+"""
+Things left to add:
+    Enemy attacks
+    Enemy spells
+    Enemy AI
+"""
