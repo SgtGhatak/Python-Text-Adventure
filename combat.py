@@ -1,4 +1,3 @@
-from classes import *
 import os
 # os friendly import so that 'clear' works on widows and linux
 os.system('cls' if os.name == 'nt' else 'clear')

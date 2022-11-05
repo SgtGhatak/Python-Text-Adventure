@@ -1,5 +1,3 @@
-from logging import root
-from turtle import onclick, width
 from database import *
 from classes import *
 from combat import *
