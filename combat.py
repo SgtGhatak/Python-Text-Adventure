@@ -1,4 +1,6 @@
 from classes import *
+import os
+os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def combat_init(player, enemy):
@@ -10,6 +12,7 @@ def combat_init(player, enemy):
 
 
 def combat(player, enemy, current_enemy_hp):
+    os.system('clear')
     combat_ui(player, enemy, current_enemy_hp)
 
     if (player.checkIfDead() == 1):
@@ -33,6 +36,8 @@ def combat(player, enemy, current_enemy_hp):
         if (player_flee(player) == 1):
             return 0
 
+    input("")
+    os.system('clear')
     combat(player, enemy, current_enemy_hp)
 
 
@@ -42,8 +47,6 @@ def player_choices(player):
     print("2. Magic      4. Flee\n")
     player_input = str(input().lower())
     print("\n")
-
-    print(player_input)
 
     if (player_input != '1' and player_input != 'attack' and player_input != '2' and player_input != 'magic' and player_input != '3' and player_input != 'item' and player_input != '4' and player_input != 'flee'):
         print("Invalid choice, please choose again.\n")
@@ -129,7 +132,8 @@ def player_use_item(player):
 
 def player_flee(player):
 
-    confirm = input("Are you sure you want to flee?\n1. Yes    2. No").lower()
+    confirm = input(
+        "Are you sure you want to flee?\n1. Yes    2. No\n\n").lower()
 
     if (confirm == '1' or confirm == 'yes'):
         print(player.name + " flees!\n")
