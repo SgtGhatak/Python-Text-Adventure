@@ -1,6 +1,13 @@
 import os
 # os friendly import so that 'clear' works on widows and linux
-os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+green_box = '\U0001F7E9'
+red_box = '\U0001F7E5'
 
 player_choice_input_map = {
     '1': 'Attack',
@@ -75,7 +82,7 @@ def combat(player, enemy, current_enemy_hp):
             return 0
 
     input("")
-    os.system('clear')
+    cls()
     combat(player, enemy, current_enemy_hp)
 
 
@@ -134,7 +141,7 @@ def combat_ui(player, enemy, current_enemy_hp):
     current_player_boxes = int(player.hp/player_hp_box)
     player_remaining_hp = player_boxes - current_player_boxes
 
-    player_hp_display = '\U0001F7E9' * current_player_boxes
+    player_hp_display = green_box * current_player_boxes
     player_remaining_hp_display = ' ' * player_remaining_hp
 
     # enemy's calculations
@@ -145,7 +152,7 @@ def combat_ui(player, enemy, current_enemy_hp):
     current_enemy_boxes = int(current_enemy_hp/enemy_hp_box)
     enemy_remaining_hp = enemy_boxes - current_enemy_boxes
 
-    enemy_hp_display = '\U0001F7E5' * current_enemy_boxes
+    enemy_hp_display = red_box * current_enemy_boxes
     enemy_remaining_hp_display = ' ' * enemy_remaining_hp
 
     print("--------------------------------------------------------------------\n")
