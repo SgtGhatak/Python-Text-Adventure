@@ -1,4 +1,5 @@
 import os
+import time
 # os friendly import so that 'clear' works on widows and linux
 
 
@@ -15,6 +16,17 @@ player_choice_input_map = {
     '3': 'Item',
     '4': 'Flee'
 }
+
+player_flee_input_map = {
+    '1': 'Yes',
+    '2': 'No'
+}
+
+
+def pause():
+    input("Press any key to continue...\n")
+    return
+
 
 """
 initialised the enemy's current HP tracker (as enemy class only holds HP stats) 
@@ -69,19 +81,25 @@ def combat(player, enemy, current_enemy_hp):
 
     player_input = player_choices(player)
 
-    if (player_input == '1' or player_input.lower() == 'attack'):
+    if (player_input == 'Attack'):
         current_enemy_hp = player_attack_weapon(
             player, enemy, current_enemy_hp)
-    elif (player_input == '2' or player_input.lower() == 'magic'):
+    elif (player_input == 'Magic'):
         current_enemy_hp = player_attack_magic(
             player, enemy, current_enemy_hp)
-    elif (player_input == '3' or player_input.lower() == 'item'):
+    elif (player_input == 'Item'):
         player_use_item(player)
-    elif (player_input == '4' or player_input.lower() == 'flee'):
-        if (player_flee(player) == 1):
+    elif (player_input == 'Flee'):
+        player_flee_choice = player_flee(player)
+        if (player_flee_choice == 'Yes'):
+            print(player.name + " has successfully fled!\n")
             return 0
+        else:
+            combat(player, enemy, current_enemy_hp)
 
-    input("")
+    time.sleep(1)
+    enemy_action(player, enemy)
+    pause()
     cls()
     combat(player, enemy, current_enemy_hp)
 
@@ -96,18 +114,19 @@ dictionary
 
 
 def player_choices(player):
-    print("What would " + player.name + " like to do?\n")
-    print("1. Attack     3. Item\n")
-    print("2. Magic      4. Flee\n")
-    player_input = str(input().lower())
-    print("\n")
+    while True:
+        print("What would " + player.name + " like to do?\n")
+        print("1. Attack     3. Item\n")
+        print("2. Magic      4. Flee\n")
+        player_input = str(input().lower())
+        print("\n")
 
-    if player_input not in player_choice_input_map:
-        print("Invalid choice, please choose again.\n")
-    else:
-        player_input = player_choice_input_map[player_input]
-
-    return player_input
+        if player_input not in player_choice_input_map:
+            print("Invalid choice, please choose again.\n")
+            continue
+        else:
+            player_input = player_choice_input_map[player_input]
+            return player_input
 
 
 """
@@ -231,18 +250,37 @@ WIP
 
 
 def player_flee(player):
+    while True:
+        player_choice = input(
+            "Are you sure you want to flee?\n1. Yes    2. No\n\n").lower()
 
-    confirm = input(
-        "Are you sure you want to flee?\n1. Yes    2. No\n\n").lower()
+        if player_choice not in player_flee_input_map:
+            print("Invalid choice, please choose again.\n")
+            continue
+        else:
+            player_choice = player_flee_input_map[player_choice]
+            return player_choice
 
-    if (confirm == '1' or confirm == 'yes'):
-        print(player.name + " flees!\n")
-        return 1
-    elif (confirm == '2' or confirm == 'no'):
-        return 0
 
-    print("Invalid choice, please choose again.\n")
-    player_flee(player)
+def enemy_action(player, enemy):
+
+    print("The " + enemy.name + " takes it's turn.\n")
+    time.sleep(1)
+
+    enemy_attack_weapon(player, enemy)
+    return
+
+
+def enemy_attack_weapon(player, enemy):
+    enemy_damage = enemy.strength
+
+    print(enemy.name + " attacks!\n")
+    print(enemy.name + " deals " + str(enemy_damage) +
+          " damage to " + player.name + "!\n")
+
+    player.hp -= enemy_damage
+
+    return
 
 
 """

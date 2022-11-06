@@ -38,7 +38,17 @@ from combat import *
 # # Commit changes and close
 # connect.commit()
 # connect.close()
+
 player = Player(0, 'Harken', 10, 10, 10, 10, 10, 10, 10*10, 10*10)
 enemy = Enemy(0, 'Goblin', 5, 5, 5, 5, 5, 5, 5)
 
+player.name = input("Enter your name:\n")
+
+print("Prepare yourself " + player.name +
+      ", a " + enemy.name + " approachs!\n")
+
+pause()
+
 combat_init(player, enemy)
+
+pause()
