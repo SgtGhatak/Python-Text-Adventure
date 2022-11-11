@@ -1,6 +1,7 @@
 from database import *
 from classes import *
 from combat import *
+from generation_script import *
 
 # # Load data from the database into the player class
 
@@ -39,10 +40,35 @@ from combat import *
 # connect.commit()
 # connect.close()
 
-player = Player(0, 'Harken', 10, 10, 10, 10, 10, 10, 10*10, 10*10)
+
 enemy = Enemy(0, 'Goblin', 5, 5, 5, 5, 5, 5, 5)
 
-player.name = input("Enter your name:\n")
+player_name = input("Enter your name:\n")
+
+player = generate_fighter(player_name)
+
+player = Player(player[0], player[1], player[2], player[3],
+                player[4], player[5], player[6], player[7])
+
+wooden_sword = wooden_sword()
+wooden_sword = Item(wooden_sword[0], wooden_sword[1],
+                    wooden_sword[2], wooden_sword[3])
+
+chainmail = chainmail()
+chainmail = Item(chainmail[0], chainmail[1], chainmail[2], chainmail[3])
+
+player.inventory.append(wooden_sword)
+player.inventory.append(chainmail)
+
+for i in player.inventory:
+    if (i.name == "Wooden Sword"):
+        player.main_hand = i
+    if (i.name == "Chainmail"):
+        player.armour = i
+
+# print(player.main_hand.name + " " + player.armour.name + "\n")
+# for i in player.inventory:
+#     print(i.name)
 
 print("Prepare yourself " + player.name +
       ", a " + enemy.name + " approachs!\n")

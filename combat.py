@@ -191,13 +191,15 @@ WIP
 
 
 def player_attack_weapon(player, enemy, current_enemy_hp):
-    player_damage = player.strength
+    player_damage = player.strength + player.main_hand.prop
 
     print(player.name + " attacks!\n")
     print(player.name + " deals " + str(player_damage) +
           " damage to " + enemy.name + "!\n")
 
     current_enemy_hp -= player_damage
+    if (current_enemy_hp < 0):
+        current_enemy_hp = 0
 
     return current_enemy_hp
 
@@ -217,6 +219,8 @@ def player_attack_magic(player, enemy, current_enemy_hp):
           " damage to " + enemy.name + "!\n")
 
     current_enemy_hp -= player_damage
+    if (current_enemy_hp < 0):
+        current_enemy_hp = 0
 
     return current_enemy_hp
 
@@ -272,7 +276,7 @@ def enemy_action(player, enemy):
 
 
 def enemy_attack_weapon(player, enemy):
-    enemy_damage = enemy.strength
+    enemy_damage = enemy.strength - player.armour.prop
 
     print(enemy.name + " attacks!\n")
     print(enemy.name + " deals " + str(enemy_damage) +
