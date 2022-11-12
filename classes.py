@@ -18,6 +18,27 @@ class Player:
         self.off_hand = None
         self.armour = None
 
+    def equip(self, name):
+        for i in self.inventory:
+            if (name == i.name):
+                if (i.category == "Weapon"):
+                    while True:
+                        x = input("Which slot would you like to equip " +
+                                  i.name + " to?\n1. Main Hand\n2. Off Hand\n").lower()
+                        if (x == "1" or x == "main hand"):
+                            self.main_hand = i
+                            print(i.name + " has been equipped to the main hand.\n")
+                            break
+                        elif (x == "2" or x == "off hand"):
+                            self.off_hand = i
+                            print(i.name + " has been equipped to the off hand.\n")
+                            break
+                        else:
+                            print("Invalid choice, please choose again.\n")
+                if (i.category == "Armour"):
+                    self.armour = i
+                    print(i.name + " has been equipped.\n")
+
     def checkIfDead(self):
         if(self.hp <= 0):
             return 1

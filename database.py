@@ -13,9 +13,7 @@ def Load():
         print('Save file found!\n')
         while True:
             print("\U0001F7E9")
-            x = input('''Would you like to load your save?\n
-1. Yes\n
-2. No\n\n''')
+            x = input("Would you like to load your save?\n1. Yes\n2. No\n\n")
             x.lower
             if (x == "yes" or x == "no" or x == "1" or x == "2"):
                 break
@@ -30,9 +28,8 @@ def Load():
             exit()
     else:
         while True:
-            x = input('''No save file found, do you want to create a new save?\n
-1. Yes\n
-2. No\n\n''')
+            x = input(
+                "No save file found, do you want to create a new save?\n1. Yes\n2. No\n\n")
             x.lower
             if (x == "yes" or x == "no" or x == "1" or x == "2"):
                 break
@@ -42,9 +39,8 @@ def Load():
             x = ""
             while True:
                 playerName = input("What is your character's name?\n")
-                x = input('''{} is your characters name?\n
-1. Yes\n
-2. No\n\n'''.format(playerName))
+                x = input(
+                    "{} is your characters name?\n1. Yes\n2. No\n\n".format(playerName))
                 x.lower
                 if (x == "yes" or x == "1"):
                     break
@@ -64,20 +60,23 @@ def Load():
                                 intelligence	integer,
                                 faith			integer,
                                 hp				integer,
-                                mp				integer)
+                                mp				integer,
+                                inventory       varchar,
+                                spells          varchar,
+                                main_hand       varchar,
+                                off_hand        varchar,
+                                armour          varchar)
                             ''')
-                cursor.execute(
-                    "INSERT INTO player VALUES ('1', (?), '10', '10', '10', '10', '10', '10', (?), (?))", (playerName, 10 * 100, 10 * 100,))
                 connect.commit()
                 connect.close()
                 print('Save file created!\n')
-                return 1, playerName, 10, 10, 10, 10, 10, 10, 10 * 100, 10 * 100
+                return
         else:
             input("Exiting the game.\n")
             exit()
 
 
-def Save(id, vigor, focus, strength, dexterity, intelligence, faith, hp, mp):
+def Save(player):
     connect = sqlite3.connect('playerData.db')
     cursor = connect.cursor()
 
@@ -100,14 +99,19 @@ def Save(id, vigor, focus, strength, dexterity, intelligence, faith, hp, mp):
             intelligence = (?),
             faith = (?),
             hp = (?),
-            mp = (?)
-            WHERE id = (?)''', (vigor, focus, strength, dexterity,
-                                intelligence, faith, hp, mp, id))
+            mp = (?),
+            inventory = (?),
+            spells = (?),
+            main_hand = (?),
+            off_hand - (?),
+            armour = (?),
+            WHERE id = (?)''', (player.vigor, player.focus, player.strength, player.dexterity,
+                                player.intelligence, player.faith, player.hp, player.mp, id))
     else:
         while True:
             x = input('''Are you sure?\n
-1. Yes\n
-2. No\n\n''')
+                        1. Yes\n
+                        2. No\n\n''')
             x.lower
             if (x == "yes" or x == "no" or x == "1" or x == "2"):
                 break

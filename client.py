@@ -1,5 +1,5 @@
 from database import *
-from classes import *
+
 from combat import *
 from generation_script import *
 
@@ -40,41 +40,33 @@ from generation_script import *
 # connect.commit()
 # connect.close()
 
+player_class_input_map = {
+    '1': 'Fighter',
+    '2': 'Cleric',
+}
 
-enemy = Enemy(0, 'Goblin', 5, 5, 5, 5, 5, 5, 5)
+goblin = generate_goblin()
 
 player_name = input("Enter your name:\n")
 
-player = generate_fighter(player_name)
+while True:
+    chosen_class = input("Pick your class:\n1. Fighter\n2. Cleric\n")
 
-player = Player(player[0], player[1], player[2], player[3],
-                player[4], player[5], player[6], player[7])
+    if chosen_class not in player_class_input_map:
+        print("Invalid choice, please choose again.\n")
+        continue
+    else:
+        chosen_class = player_class_input_map[chosen_class]
+        break
 
-wooden_sword = wooden_sword()
-wooden_sword = Item(wooden_sword[0], wooden_sword[1],
-                    wooden_sword[2], wooden_sword[3])
+player = generate_player(player_name, chosen_class)
 
-chainmail = chainmail()
-chainmail = Item(chainmail[0], chainmail[1], chainmail[2], chainmail[3])
-
-player.inventory.append(wooden_sword)
-player.inventory.append(chainmail)
-
-for i in player.inventory:
-    if (i.name == "Wooden Sword"):
-        player.main_hand = i
-    if (i.name == "Chainmail"):
-        player.armour = i
-
-# print(player.main_hand.name + " " + player.armour.name + "\n")
-# for i in player.inventory:
-#     print(i.name)
 
 print("Prepare yourself " + player.name +
-      ", a " + enemy.name + " approachs!\n")
+      ", a " + goblin.name + " approachs!\n")
 
 pause()
 
-combat_init(player, enemy)
+combat_init(player, goblin)
 
 pause()
