@@ -237,7 +237,7 @@ def player_choose_spell(player, enemy):
     while True:
         print("Choose your spell.\n")
         for i in player.spells:
-            print("{}. {}\n".format(i.id, i.name))
+            print("{}. {}".format(i.id, i.name))
         chosen_spell = input("\n").lower()
 
         if chosen_spell not in spell_map:
@@ -256,8 +256,12 @@ def player_choose_spell(player, enemy):
 
         if (chosen_spell.type == "Heal"):
             player_heal_magic(player, chosen_spell, modifier)
+
     if (chosen_spell.category == "Spell"):
         modifier = int(player.intelligence/2 - 5)
+
+        if(chosen_spell.type == "Attack"):
+            player_attack_magic(player, enemy, chosen_spell, modifier)
 
 
 def player_heal_magic(player, spell, modifier):
@@ -276,10 +280,18 @@ def player_heal_magic(player, spell, modifier):
         player.hp = player.vigor
 
 
-def player_attack_magic(player, enemy):
-    player_damage = player.intelligence
+def player_attack_magic(player, enemy, spell, modifier):
+    player_attack = calculate_attack(player.proficiency, modifier)
+    player_damage = calculate_damage(spell.prop, modifier)
 
-    print(player.name + " cast magic!\n")
+    print(player.name + " casts " + spell.name + "!\n")
+    time.sleep(1)
+    if (player_attack < enemy.ac):
+        print(player.name + " misses their attack.\n")
+        return
+    else:
+        print(player.name + " hits!\n")
+    time.sleep(1)
     print(player.name + " deals " + str(player_damage) +
           " damage to " + enemy.name + "!\n")
 
@@ -298,7 +310,7 @@ WIP
 
 
 def player_use_item(player):
-    player_heal = 30
+    player_heal = random.randint(1, 8)
 
     print(player.name + " uses a potion!\n")
 
@@ -308,6 +320,9 @@ def player_use_item(player):
     print(player.name + " heals " + str(player_heal) + " HP!\n")
 
     player.hp += player_heal
+
+    if (player.hp > player.vigor):
+        player.hp = player.vigor
 
     return
 

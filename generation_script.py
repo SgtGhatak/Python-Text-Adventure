@@ -5,6 +5,7 @@ player_class_input_map = {
     '1': 'Fighter',
     '2': 'Paladin',
     '3': 'Cleric',
+    '4': 'Sorcerer'
 }
 
 enemy_map = {
@@ -21,6 +22,8 @@ def generate_player(name, role):
         player = generate_paladin(name)
     if(role == "Cleric"):
         player = generate_cleric(name)
+    if(role == 'Sorcerer'):
+        player = generate_sorcerer(name)
 
     return player
 
@@ -72,6 +75,24 @@ def generate_cleric(name):
             cleric.ac = int(cleric.armour.prop)
 
     return cleric
+
+
+def generate_sorcerer(name):
+    sorcerer = Player(0, name, 14, 12, 10, 13, 16, 10)
+
+    sorcerer.inventory.append(generate_item("Dagger", sorcerer))
+    sorcerer.inventory.append(generate_item("Cloth", sorcerer))
+    sorcerer.spells.append(generate_spell("Fire Bolt", sorcerer))
+    sorcerer.spells.append(generate_spell("Ray of Frost", sorcerer))
+
+    for i in sorcerer.inventory:
+        if (i.name == "Dagger"):
+            sorcerer.main_hand = i
+        if (i.name == "Cloth"):
+            sorcerer.armour = i
+            sorcerer.ac = int(sorcerer.armour.prop)
+
+    return sorcerer
 
 # fetch item from database and return item object
 

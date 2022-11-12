@@ -136,7 +136,9 @@ def insert_items_into_db():
         (1, 'Mace', '1d6', 'Mace', 'Weapon'),
         (2, 'Longsword', '1d8', 'Sword', 'Weapon'),
         (3, 'Greatsword', '2d6', 'Two-handed', 'Weapon'),
-        (4, 'Chainmail', '16', 'Medium Armour', 'Armour')
+        (4, 'Dagger', '1d4', 'Dagger', 'Weapon'),
+        (5, 'Chainmail', '16', 'Medium Armour', 'Armour'),
+        (6, 'Cloth', '10', 'Light Armour', 'Armour')
         """)
 
     connnect.commit()
@@ -157,7 +159,7 @@ def insert_spells_into_db():
         """
         INSERT INTO spells VALUES 
         (1, 'Fire Bolt', '1d10', 'Attack', 'Spell'),
-        (2, 'Ice Bolt', '1d8', 'Attack', 'Spell'),
+        (2, 'Ray of Frost', '1d8', 'Attack', 'Spell'),
         (3, 'Cure Wounds', '1d8', 'Heal', 'Miracle'),
         (4, 'Holy Smite', '1d8', 'Enchantment', 'Miracle')
         """)
