@@ -2,19 +2,18 @@
 
 A simple combat simulator!
 
-Made using python, play as a character with custom stats and fight
-pre-generated enemies in a custom made combat system!
+Pick a class and fight monsters in a text based combat system!
 
 Entirely text based and played through the terminal.
 
-WORK IN PROGRESS
+**WORK IN PROGRESS**
 
-Coding style - default python style
-packages - lower_with_under
-modules - lower_with_under
-classes - CapitalWords
-functions - lower_with_under()
-globals or const - CAPS_WITH_UNDER
-instance variables - lower_with_under
-methods - lower_with_under
-local variables - lower_with_under
+Coding style - default python style<br>
+packages - lower_with_under<br>
+modules - lower_with_under<br>
+classes - CapitalWords<br>
+functions - lower_with_under()<br>
+globals or const - CAPS_WITH_UNDER<br>
+instance variables - lower_with_under<br>
+methods - lower_with_under<br>
+local variables - lower_with_under<br>

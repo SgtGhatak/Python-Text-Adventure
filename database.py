@@ -1,131 +1,62 @@
 import sqlite3
 
 
-def Load():
-    connect = sqlite3.connect('playerData.db')
-    cursor = connect.cursor()
+def InitDB():
+    # define connection and cursor
+    connnect = sqlite3.connect('gameDatabase.db')
+    cursor = connnect.cursor()
+
+    # create player tale
+
+    create_player_table = """CREATE TABLE IF NOT EXISTS
+    players(player_id INTEGER,
+    name TEXT,
+    vigor INTEGER,
+    focus INTEGER,
+    strength INTEGER,
+    dexterity INTEGER,
+    intelligence INTEGER,
+    faith INTEGER,
+    hp INTEGER,
+    mp INTEGER,
+    PRIMARY KEY (player_id))"""
+
+    cursor.execute(create_player_table)
+
+    # crete player_times table
+
+    create_player_items_table = """CREATE TABLE IF NOT EXISTS
+    player_items(player_item_id INTEGER,
+    name TEXT,
+    type TEXT,
+    category TEXT,
+    PRIMARY KEY (player_items))"""
+
+    cursor.execute(create_player_items_table)
+
+    # create player_data table
+
+    create_player_data_table = """CREATE TABLE IF NOT EXISTS
+    player_data(player_id INTEGER,
+    player_item_id INTEGER,
+    quantity INTEGER,
+    PRIMARY KEY (player_id, player_item_id),
+    FOREIGN KEY(player_id) REFERENCES players(player_id),
+    FOREIGN KEY(player_item_id) REFERENCES player_items(player_item_id))"""
+
+    cursor.execute(create_player_data_table)
+
+    # insert values into players table
+
     cursor.execute(
-        ''' SELECT count(name) 
-        FROM sqlite_master 
-        WHERE type='table' 
-        AND name='player' ''')
-    if cursor.fetchone()[0] == 1:
-        print('Save file found!\n')
-        while True:
-            print("\U0001F7E9")
-            x = input("Would you like to load your save?\n1. Yes\n2. No\n\n")
-            x.lower
-            if (x == "yes" or x == "no" or x == "1" or x == "2"):
-                break
-            else:
-                print("Invalid input, please try again\n")
-        if (x == 'yes' or x == "1"):
-            cursor.execute("SELECT * FROM player")
-            data = cursor.fetchone()
-            return data
-        else:
-            input("Exiting the game.\n")
-            exit()
-    else:
-        while True:
-            x = input(
-                "No save file found, do you want to create a new save?\n1. Yes\n2. No\n\n")
-            x.lower
-            if (x == "yes" or x == "no" or x == "1" or x == "2"):
-                break
-            else:
-                print("Invalid input, please try again\n")
-        if(x == "yes" or x == "1"):
-            x = ""
-            while True:
-                playerName = input("What is your character's name?\n")
-                x = input(
-                    "{} is your characters name?\n1. Yes\n2. No\n\n".format(playerName))
-                x.lower
-                if (x == "yes" or x == "1"):
-                    break
-                elif (x == "no" or x == "2"):
-                    print("Please enter your name again\n")
-                else:
-                    print("Invalid input, please try again\n")
-            if (x == "yes" or x == "1"):
+        "INSERT INTO players VALUES (0, 'Harken', 10, 10, 10, 10, 10, 10, 100, 100)")
+    cursor.execute(
+        "INSERT INTO players VALUES (1, 'Siegfried', 11, 11, 11, 11, 11, 11, 110, 110)")
 
-                cursor.execute('''CREATE TABLE player
-                                (id		integer		primary key		not null,
-                                name			text,
-                                vigor			integer,
-                                focus			integer,
-                                strength		integer,
-                                dexterity		integer,
-                                intelligence	integer,
-                                faith			integer,
-                                hp				integer,
-                                mp				integer,
-                                inventory       varchar,
-                                spells          varchar,
-                                main_hand       varchar,
-                                off_hand        varchar,
-                                armour          varchar)
-                            ''')
-                connect.commit()
-                connect.close()
-                print('Save file created!\n')
-                return
-        else:
-            input("Exiting the game.\n")
-            exit()
+    # print results
+    cursor.execute("SELECT * FROM players")
 
-
-def Save(player):
-    connect = sqlite3.connect('playerData.db')
-    cursor = connect.cursor()
-
-    while True:
-        x = input('''Would you like to save your data?\n
-1. Yes\n
-2. No\n\n''')
-        x.lower
-        if (x == "yes" or x == "no" or x == "1" or x == "2"):
-            break
-        else:
-            print("Invalid input, please try again\n")
-    if (x == 'yes' or x == "1"):
-        cursor.execute(
-            '''UPDATE player
-            SET vigor = (?),
-            focus = (?),
-            strength = (?),
-            dexterity = (?),
-            intelligence = (?),
-            faith = (?),
-            hp = (?),
-            mp = (?),
-            inventory = (?),
-            spells = (?),
-            main_hand = (?),
-            off_hand - (?),
-            armour = (?),
-            WHERE id = (?)''', (player.vigor, player.focus, player.strength, player.dexterity,
-                                player.intelligence, player.faith, player.hp, player.mp, id))
-    else:
-        while True:
-            x = input('''Are you sure?\n
-                        1. Yes\n
-                        2. No\n\n''')
-            x.lower
-            if (x == "yes" or x == "no" or x == "1" or x == "2"):
-                break
-            else:
-                print("Invalid input, please try again\n")
-        if (x == "yes" or x == "1"):
-            print("File has not been saved.\n")
-            return
-        else:
-            Save(id, vigor, focus, strength, dexterity,
-                 intelligence, faith, hp, mp)
-            return
-
-    connect.commit()
-    connect.close()
+    results = cursor.fetchall()
+    print(results)
 
     return
