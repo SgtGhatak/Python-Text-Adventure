@@ -78,7 +78,7 @@ def combat(player, enemy, enemy_max_hp):
         if (player_input == 'Attack'):
             player_attack_weapon(player, enemy)
         elif (player_input == 'Magic'):
-            player_attack_magic(player, enemy)
+            player_choose_spell(player, enemy)
         elif (player_input == 'Item'):
             player_use_item(player)
         elif (player_input == 'Flee'):
@@ -224,6 +224,56 @@ The function to calculate the player's magic damage
 
 WIP
 """
+
+
+def player_choose_spell(player, enemy):
+
+    spell_map = {str(i.id): i.name for i in player.spells}
+
+    if (len(player.spells) == 0):
+        print("You have no spells\n")
+        return
+
+    while True:
+        print("Choose your spell.\n")
+        for i in player.spells:
+            print("{}. {}\n".format(i.id, i.name))
+        chosen_spell = input("\n").lower()
+
+        if chosen_spell not in spell_map:
+            print("Invalid choice, please choose again.\n")
+            continue
+        else:
+            chosen_spell = spell_map[chosen_spell]
+            break
+
+    for i in player.spells:
+        if (chosen_spell == i.name):
+            chosen_spell = i
+
+    if (chosen_spell.category == "Miracle"):
+        modifier = int(player.faith/2 - 5)
+
+        if (chosen_spell.type == "Heal"):
+            player_heal_magic(player, chosen_spell, modifier)
+    if (chosen_spell.category == "Spell"):
+        modifier = int(player.intelligence/2 - 5)
+
+
+def player_heal_magic(player, spell, modifier):
+    dice = spell.prop.split("d")
+
+    heal = modifier
+    for i in range(int(dice[0])):
+        heal += random.randint(1, int(dice[1]))
+
+    print(player.name + " cast " + spell.name + ".\n")
+    print(player.name + " heals " + str(heal) + "!\n")
+
+    player.hp += heal
+
+    if (player.hp > player.vigor):
+        player.hp = player.vigor
 
 
 def player_attack_magic(player, enemy):

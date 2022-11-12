@@ -28,8 +28,8 @@ def generate_player(name, role):
 def generate_fighter(name):
     fighter = Player(0, name, 15, 8, 16, 11, 9, 10)
 
-    fighter.inventory.append(generate_item("Longsword"))
-    fighter.inventory.append(generate_item("Chainmail"))
+    fighter.inventory.append(generate_item("Longsword", fighter))
+    fighter.inventory.append(generate_item("Chainmail", fighter))
 
     for i in fighter.inventory:
         if (i.name == "Longsword"):
@@ -44,8 +44,8 @@ def generate_fighter(name):
 def generate_paladin(name):
     paladin = Player(0, name, 14, 13, 16, 9, 11, 15)
 
-    paladin.inventory.append(generate_item("Greatsword"))
-    paladin.inventory.append(generate_item("Chainmail"))
+    paladin.inventory.append(generate_item("Greatsword", paladin))
+    paladin.inventory.append(generate_item("Chainmail", paladin))
 
     for i in paladin.inventory:
         if (i.name == "Greatsword"):
@@ -60,8 +60,9 @@ def generate_paladin(name):
 def generate_cleric(name):
     cleric = Player(0, name, 15, 16, 14, 8, 10, 16)
 
-    cleric.inventory.append(generate_item("Mace"))
-    cleric.inventory.append(generate_item("Chainmail"))
+    cleric.inventory.append(generate_item("Mace", cleric))
+    cleric.inventory.append(generate_item("Chainmail", cleric))
+    cleric.spells.append(generate_spell("Cure Wounds", cleric))
 
     for i in cleric.inventory:
         if (i.name == "Mace"):
@@ -75,20 +76,34 @@ def generate_cleric(name):
 # fetch item from database and return item object
 
 
-def generate_item(name):
+def generate_item(name, player):
     connnect = sqlite3.connect('gameDatabase.db')
     cursor = connnect.cursor()
 
     cursor.execute("SELECT * FROM items WHERE items.name = (?)", (name,))
     item = cursor.fetchone()
 
-    item = Item(item[0], item[1], item[2], item[3], item[4])
+    item = Item(len(player.inventory) + 1, item[1], item[2], item[3], item[4])
 
     cursor.close()
     return item
 
 
+def generate_spell(name, player):
+    connnect = sqlite3.connect('gameDatabase.db')
+    cursor = connnect.cursor()
+
+    cursor.execute("SELECT * FROM spells WHERE spells.name = (?)", (name,))
+    spell = cursor.fetchone()
+
+    spell = Spell(len(player.spells) + 1,
+                  spell[1], spell[2], spell[3], spell[4])
+
+    cursor.close()
+    return spell
+
 # enemy generation
+
 
 def generate_enemy(name):
     if (name == "Goblin"):

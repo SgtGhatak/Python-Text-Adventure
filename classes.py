@@ -61,6 +61,15 @@ class Item():
         self.category = category
 
 
+class Spell():
+    def __init__(self, id, name, prop, type, category):
+        self.id = id
+        self.name = name
+        self.prop = prop
+        self.type = type
+        self.category = category
+
+
 class Enemy:
     def __init__(self, id, name, vigor, focus, strength, dexterity, intelligence, faith, hp, mp, ac, difficulty, damage, proficiency):
         self.id = id

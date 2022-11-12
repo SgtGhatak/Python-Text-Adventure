@@ -4,6 +4,7 @@ from generation_script import *
 
 init_DB()
 insert_items_into_db()
+insert_spells_into_db()
 
 player_name = input("Enter your name:\n")
 chosen_class = 0

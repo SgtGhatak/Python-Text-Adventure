@@ -141,3 +141,26 @@ def insert_items_into_db():
 
     connnect.commit()
     cursor.close()
+
+
+def insert_spells_into_db():
+    connnect = sqlite3.connect('gameDatabase.db')
+    cursor = connnect.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM spells")
+    result = cursor.fetchone()
+
+    if (result[0] != 0):
+        return
+
+    cursor.execute(
+        """
+        INSERT INTO spells VALUES 
+        (1, 'Fire Bolt', '1d10', 'Attack', 'Spell'),
+        (2, 'Ice Bolt', '1d8', 'Attack', 'Spell'),
+        (3, 'Cure Wounds', '1d8', 'Heal', 'Miracle'),
+        (4, 'Holy Smite', '1d8', 'Enchantment', 'Miracle')
+        """)
+
+    connnect.commit()
+    cursor.close()
