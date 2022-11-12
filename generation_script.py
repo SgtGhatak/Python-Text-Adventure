@@ -1,4 +1,5 @@
 from classes import *
+import sqlite3
 
 player_class_input_map = {
     '1': 'Fighter',
@@ -27,14 +28,15 @@ def generate_player(name, role):
 def generate_fighter(name):
     fighter = Player(0, name, 15, 8, 16, 11, 9, 10)
 
-    fighter.inventory.append(longsword())
-    fighter.inventory.append(chainmail())
+    fighter.inventory.append(generate_item("Longsword"))
+    fighter.inventory.append(generate_item("Chainmail"))
 
     for i in fighter.inventory:
         if (i.name == "Longsword"):
             fighter.main_hand = i
         if (i.name == "Chainmail"):
             fighter.armour = i
+            fighter.ac = int(fighter.armour.prop)
 
     return fighter
 
@@ -42,14 +44,15 @@ def generate_fighter(name):
 def generate_paladin(name):
     paladin = Player(0, name, 14, 13, 16, 9, 11, 15)
 
-    paladin.inventory.append(greatsword())
-    paladin.inventory.append(chainmail())
+    paladin.inventory.append(generate_item("Greatsword"))
+    paladin.inventory.append(generate_item("Chainmail"))
 
     for i in paladin.inventory:
         if (i.name == "Greatsword"):
             paladin.main_hand = i
         if (i.name == "Chainmail"):
             paladin.armour = i
+            paladin.ac = int(paladin.armour.prop)
 
     return paladin
 
@@ -57,39 +60,35 @@ def generate_paladin(name):
 def generate_cleric(name):
     cleric = Player(0, name, 15, 16, 14, 8, 10, 16)
 
-    cleric.inventory.append(mace())
-    cleric.inventory.append(chainmail())
+    cleric.inventory.append(generate_item("Mace"))
+    cleric.inventory.append(generate_item("Chainmail"))
 
     for i in cleric.inventory:
         if (i.name == "Mace"):
             cleric.main_hand = i
         if (i.name == "Chainmail"):
             cleric.armour = i
+            cleric.ac = int(cleric.armour.prop)
 
     return cleric
 
-
-def mace():
-    mace = Item(1, "Mace", "1d6", "Mace", "Weapon")
-    return mace
+# fetch item from database and return item object
 
 
-def longsword():
-    longsword = Item(2, "Longsword", "1d8", "Sword", "Weapon")
-    return longsword
+def generate_item(name):
+    connnect = sqlite3.connect('gameDatabase.db')
+    cursor = connnect.cursor()
 
+    cursor.execute("SELECT * FROM items WHERE items.name = (?)", (name,))
+    item = cursor.fetchone()
 
-def chainmail():
-    chainmail = Item(3, "Chainmail", 3, "Medium Armour", "Armour")
-    return chainmail
+    item = Item(item[0], item[1], item[2], item[3], item[4])
 
+    cursor.close()
+    return item
 
-def greatsword():
-    greatsword = Item(4, "Greatsword", "2d6", "Two-handed", "Weapon")
-    return greatsword
 
 # enemy generation
-
 
 def generate_enemy(name):
     if (name == "Goblin"):

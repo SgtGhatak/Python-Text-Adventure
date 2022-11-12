@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def InitDB():
+def init_DB():
     # define connection and cursor
     connnect = sqlite3.connect('gameDatabase.db')
     cursor = connnect.cursor()
@@ -53,13 +53,44 @@ def InitDB():
     # create player_spells table
 
     create_player_spells_table = """CREATE TABLE IF NOT EXISTS
-    player_spells(player_spell_id INTEGER
+    player_spells(player_spell_id INTEGER,
     name TEXT,
     prop INTEGER,
     type TEXT,
     category TEXT,
     PRIMARY KEY (player_spell_id))
     """
+
+    cursor.execute(create_player_spells_table)
+
+    # create items table
+
+    create_items_table = """CREATE TABLE IF NOT EXISTS
+    items(item_id INTEGER,
+    name TEXT,
+    prop TEXT,
+    type TEXT,
+    category TEXT,
+    PRIMARY KEY (item_id))
+    """
+
+    cursor.execute(create_items_table)
+
+    # create spells table
+
+    create_spells_table = """CREATE TABLE IF NOT EXISTS
+    spells(spell_id INTEGER,
+    name TEXT,
+    prop INTEGER,
+    type TEXT,
+    category TEXT,
+    PRIMARY KEY (spell_id))
+    """
+
+    cursor.execute(create_spells_table)
+
+    connnect.commit()
+    cursor.close()
 
     # # get rows
     # cursor.execute("SELECT COUNT(*) FROM players")
@@ -85,3 +116,28 @@ def InitDB():
     # print(results[0])
 
     return
+
+# fill in items table
+
+
+def insert_items_into_db():
+    connnect = sqlite3.connect('gameDatabase.db')
+    cursor = connnect.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM items")
+    result = cursor.fetchone()
+
+    if (result[0] != 0):
+        return
+
+    cursor.execute(
+        """
+        INSERT INTO items VALUES 
+        (1, 'Mace', '1d6', 'Mace', 'Weapon'),
+        (2, 'Longsword', '1d8', 'Sword', 'Weapon'),
+        (3, 'Greatsword', '2d6', 'Two-handed', 'Weapon'),
+        (4, 'Chainmail', '16', 'Medium Armour', 'Armour')
+        """)
+
+    connnect.commit()
+    cursor.close()

@@ -2,8 +2,8 @@ from database import *
 from combat import *
 from generation_script import *
 
-InitDB()
-
+init_DB()
+insert_items_into_db()
 
 player_name = input("Enter your name:\n")
 chosen_class = 0
