@@ -1,5 +1,6 @@
 import os
 import time
+import random
 # os friendly import so that 'clear' works on widows and linux
 
 
@@ -35,11 +36,9 @@ then runs the actual combat function.
 
 
 def combat_init(player, enemy):
-    current_enemy_hp = enemy.vigor*10
+    combat_result = combat(player, enemy, enemy.hp)
 
-    combat_result = combat(player, enemy, current_enemy_hp)
-
-    return
+    return combat_result
 
 
 """
@@ -69,39 +68,40 @@ has died or if the player chooses to flee.
 """
 
 
-def combat(player, enemy, current_enemy_hp):
-    combat_ui(player, enemy, current_enemy_hp)
+def combat(player, enemy, enemy_max_hp):
+    while (player.hp > 0 and enemy.hp > 0):
+        cls()
+        combat_ui(player, enemy, enemy_max_hp)
+
+        player_input = player_choices(player)
+
+        if (player_input == 'Attack'):
+            player_attack_weapon(player, enemy)
+        elif (player_input == 'Magic'):
+            player_attack_magic(player, enemy)
+        elif (player_input == 'Item'):
+            player_use_item(player)
+        elif (player_input == 'Flee'):
+            player_flee_choice = player_flee(player)
+            if (player_flee_choice == 'Yes'):
+                print(player.name + " has successfully fled!\n")
+                return 0
+            else:
+                continue
+
+        if (enemy.hp <= 0):
+            continue
+
+        time.sleep(1)
+        enemy_action(player, enemy)
+        pause()
 
     if (player.checkIfDead() == 1):
         print("The player has died...\n")
         return -1
-    elif (current_enemy_hp <= 0):
+    else:
         print("The enemy is dead!\n")
         return 1
-
-    player_input = player_choices(player)
-
-    if (player_input == 'Attack'):
-        current_enemy_hp = player_attack_weapon(
-            player, enemy, current_enemy_hp)
-    elif (player_input == 'Magic'):
-        current_enemy_hp = player_attack_magic(
-            player, enemy, current_enemy_hp)
-    elif (player_input == 'Item'):
-        player_use_item(player)
-    elif (player_input == 'Flee'):
-        player_flee_choice = player_flee(player)
-        if (player_flee_choice == 'Yes'):
-            print(player.name + " has successfully fled!\n")
-            return 0
-        else:
-            combat(player, enemy, current_enemy_hp)
-
-    time.sleep(1)
-    enemy_action(player, enemy)
-    pause()
-    cls()
-    combat(player, enemy, current_enemy_hp)
 
 
 """
@@ -151,31 +151,35 @@ being printed at the bottom of the GUI
 """
 
 
-def combat_ui(player, enemy, current_enemy_hp):
+def combat_ui(player, enemy, enemy_max_hp):
     # player's calculations
-    max_player_hp = player.vigor*10
-    player_hp_box = (player.vigor*10)/10
+    max_player_hp = player.vigor
+    player_hp_box = (player.vigor)/10
 
     player_boxes = int(max_player_hp/player_hp_box)
     current_player_boxes = int(player.hp/player_hp_box)
+    if (player.hp % player_hp_box > 0 and current_player_boxes < 10):
+        current_player_boxes += 1
     player_remaining_hp = player_boxes - current_player_boxes
 
     player_hp_display = green_box * current_player_boxes
     player_remaining_hp_display = ' ' * player_remaining_hp
 
     # enemy's calculations
-    max_enemy_hp = enemy.vigor*10
-    enemy_hp_box = (enemy.vigor*10)/10
+    max_enemy_hp = enemy_max_hp
+    enemy_hp_box = (enemy_max_hp)/10
 
     enemy_boxes = int(max_enemy_hp/enemy_hp_box)
-    current_enemy_boxes = int(current_enemy_hp/enemy_hp_box)
+    current_enemy_boxes = int(enemy.hp/enemy_hp_box)
+    if (enemy.hp % enemy_hp_box > 0 and current_enemy_boxes < 10):
+        current_enemy_boxes += 1
     enemy_remaining_hp = enemy_boxes - current_enemy_boxes
 
     enemy_hp_display = red_box * current_enemy_boxes
     enemy_remaining_hp_display = ' ' * enemy_remaining_hp
 
     print("--------------------------------------------------------------------\n")
-    print(enemy.name + " HP: " + str(current_enemy_hp) + "\n")
+    print(enemy.name + " HP: " + str(enemy.hp) + "\n")
     print(str(enemy_hp_display) + str(enemy_remaining_hp_display) + "\n")
     print("\n")
     print((player.name) + " HP: " + str(player.hp) + "\n")
@@ -190,18 +194,29 @@ WIP
 """
 
 
-def player_attack_weapon(player, enemy, current_enemy_hp):
-    player_damage = player.strength + player.main_hand.prop
+def player_attack_weapon(player, enemy):
 
-    print(player.name + " attacks!\n")
+    modifier = int(player.strength/2 - 5)
+
+    player_attack = calculate_attack(player.proficiency, modifier)
+    player_damage = calculate_damage(player.main_hand.prop, modifier)
+
+    print(player.name + " attacks " + enemy.name + "\n")
+    time.sleep(1)
+    if (player_attack < enemy.ac):
+        print(player.name + " misses their attack.\n")
+        return
+    else:
+        print(player.name + " hits!\n")
+    time.sleep(1)
     print(player.name + " deals " + str(player_damage) +
           " damage to " + enemy.name + "!\n")
 
-    current_enemy_hp -= player_damage
-    if (current_enemy_hp < 0):
-        current_enemy_hp = 0
+    enemy.hp -= player_damage
+    if (enemy.hp < 0):
+        enemy.hp = 0
 
-    return current_enemy_hp
+    return
 
 
 """
@@ -211,18 +226,18 @@ WIP
 """
 
 
-def player_attack_magic(player, enemy, current_enemy_hp):
+def player_attack_magic(player, enemy):
     player_damage = player.intelligence
 
     print(player.name + " cast magic!\n")
     print(player.name + " deals " + str(player_damage) +
           " damage to " + enemy.name + "!\n")
 
-    current_enemy_hp -= player_damage
-    if (current_enemy_hp < 0):
-        current_enemy_hp = 0
+    enemy.hp -= player_damage
+    if (enemy.hp < 0):
+        enemy.hp = 0
 
-    return current_enemy_hp
+    return
 
 
 """
@@ -238,7 +253,7 @@ def player_use_item(player):
     print(player.name + " uses a potion!\n")
 
     if (player.hp + player_heal > player.vigor*10):
-        player_heal = player.vigor*10 - player.hp
+        player_heal = player.vigor - player.hp
 
     print(player.name + " heals " + str(player_heal) + " HP!\n")
 
@@ -276,15 +291,51 @@ def enemy_action(player, enemy):
 
 
 def enemy_attack_weapon(player, enemy):
-    enemy_damage = enemy.strength - player.armour.prop
+    if (enemy.strength >= enemy.dexterity):
+        modifier = int(enemy.strength/2 - 5)
+    else:
+        modifier = int(enemy.dexterity/2 - 5)
 
-    print(enemy.name + " attacks!\n")
+    enemy_attack = calculate_attack(enemy.proficiency, modifier)
+    enemy_damage = calculate_damage(enemy.damage, modifier)
+
+    print(enemy.name + " attacks " + player.name + "\n")
+    time.sleep(1)
+    if (enemy_attack < player.ac):
+        print(enemy.name + " misses their attack.\n")
+        return
+    else:
+        print(enemy.name + " hits!\n")
+    time.sleep(1)
     print(enemy.name + " deals " + str(enemy_damage) +
           " damage to " + player.name + "!\n")
 
     player.hp -= enemy_damage
 
     return
+
+
+def calculate_attack(proficiency, modifier):
+    modifier = modifier + proficiency
+
+    attack = random.randint(1, 20) + modifier
+
+    return attack
+
+
+def calculate_damage(damage_dice, modifier):
+    dice = damage_dice.split("d")
+    damage = 0
+
+    for i in range(int(dice[0])):
+        damage += random.randint(1, int(dice[1]))
+
+    damage = damage + modifier
+
+    if damage < 0:
+        damage = 0
+
+    return damage
 
 
 """

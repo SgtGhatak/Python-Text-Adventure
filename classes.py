@@ -8,8 +8,10 @@ class Player:
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.faith = faith
-        self.hp = vigor * 10
-        self.mp = focus * 10
+        self.hp = vigor
+        self.mp = focus
+        self.ac = 10 + dexterity
+        self.proficiency = 2
 
         self.inventory = []
         self.spells = []
@@ -51,7 +53,8 @@ class Player:
 
 
 class Item():
-    def __init__(self, name, prop, type, category):
+    def __init__(self, id, name, prop, type, category):
+        self.id = id
         self.name = name
         self.prop = prop
         self.type = type
@@ -59,7 +62,7 @@ class Item():
 
 
 class Enemy:
-    def __init__(self, id, name, vigor, focus, strength, dexterity, intelligence, faith, difficulty):
+    def __init__(self, id, name, vigor, focus, strength, dexterity, intelligence, faith, hp, mp, ac, difficulty, damage, proficiency):
         self.id = id
         self.name = name
         self.vigor = vigor
@@ -68,4 +71,9 @@ class Enemy:
         self.dexterity = dexterity
         self.intelligence = intelligence
         self.faith = faith
+        self.hp = hp
+        self.mp = mp
+        self.ac = ac
         self.difficulty = difficulty
+        self.damage = damage
+        self.proficiency = proficiency

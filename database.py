@@ -19,7 +19,8 @@ def InitDB():
     faith INTEGER,
     hp INTEGER,
     mp INTEGER,
-    PRIMARY KEY (player_id))"""
+    PRIMARY KEY (player_id))
+    """
 
     cursor.execute(create_player_table)
 
@@ -28,9 +29,11 @@ def InitDB():
     create_player_items_table = """CREATE TABLE IF NOT EXISTS
     player_items(player_item_id INTEGER,
     name TEXT,
+    prop TEXT,
     type TEXT,
     category TEXT,
-    PRIMARY KEY (player_items))"""
+    PRIMARY KEY (player_item_id))
+    """
 
     cursor.execute(create_player_items_table)
 
@@ -42,21 +45,43 @@ def InitDB():
     quantity INTEGER,
     PRIMARY KEY (player_id, player_item_id),
     FOREIGN KEY(player_id) REFERENCES players(player_id),
-    FOREIGN KEY(player_item_id) REFERENCES player_items(player_item_id))"""
+    FOREIGN KEY(player_item_id) REFERENCES player_items(player_item_id))
+    """
 
     cursor.execute(create_player_data_table)
 
-    # insert values into players table
+    # create player_spells table
 
-    cursor.execute(
-        "INSERT INTO players VALUES (0, 'Harken', 10, 10, 10, 10, 10, 10, 100, 100)")
-    cursor.execute(
-        "INSERT INTO players VALUES (1, 'Siegfried', 11, 11, 11, 11, 11, 11, 110, 110)")
+    create_player_spells_table = """CREATE TABLE IF NOT EXISTS
+    player_spells(player_spell_id INTEGER
+    name TEXT,
+    prop INTEGER,
+    type TEXT,
+    category TEXT,
+    PRIMARY KEY (player_spell_id))
+    """
 
-    # print results
-    cursor.execute("SELECT * FROM players")
+    # # get rows
+    # cursor.execute("SELECT COUNT(*) FROM players")
+    # results = cursor.fetchone()
+    # print(results[0])
 
-    results = cursor.fetchall()
-    print(results)
+    # # insert values into players table
+
+    # cursor.execute(
+    #     "INSERT INTO players VALUES (0, 'Harken', 10, 10, 10, 10, 10, 10, 100, 100)")
+    # cursor.execute(
+    #     "INSERT INTO players VALUES (1, 'Siegfried', 11, 11, 11, 11, 11, 11, 110, 110)")
+
+    # # print results
+    # cursor.execute("SELECT * FROM players")
+
+    # results = cursor.fetchall()
+    # print(results)
+
+    # # get rows
+    # cursor.execute("SELECT COUNT(*) FROM players")
+    # results = cursor.fetchone()
+    # print(results[0])
 
     return

@@ -2,17 +2,17 @@ from database import *
 from combat import *
 from generation_script import *
 
-player_class_input_map = {
-    '1': 'Fighter',
-    '2': 'Cleric',
-}
+InitDB()
 
-goblin = generate_goblin()
 
 player_name = input("Enter your name:\n")
+chosen_class = 0
 
 while True:
-    chosen_class = input("Pick your class:\n1. Fighter\n2. Cleric\n")
+    print("Pick your class\n")
+    for i in player_class_input_map:
+        print("{}. {}".format(i, player_class_input_map[i]))
+    chosen_class = input("\n")
 
     if chosen_class not in player_class_input_map:
         print("Invalid choice, please choose again.\n")
@@ -23,12 +23,28 @@ while True:
 
 player = generate_player(player_name, chosen_class)
 
+print("\nWelcome {}, the {}\n".format(player.name, chosen_class))
 
-print("Prepare yourself " + player.name +
-      ", a " + goblin.name + " approachs!\n")
+while True:
+    print("Who would you like to fight?\n")
+    for i in enemy_map:
+        print("{}. {}".format(i, enemy_map[i]))
+    chosen_enemy = input("\n")
+
+    if chosen_enemy not in enemy_map:
+        print("Invalid choice, please choose again.\n")
+        continue
+    else:
+        chosen_enemy = enemy_map[chosen_enemy]
+        break
+
+enemy = generate_enemy(chosen_enemy)
+
+print("\nPrepare yourself " + player.name +
+      ", a " + enemy.name + " approaches!\n")
 
 pause()
 
-combat_init(player, goblin)
+result = combat_init(player, enemy)
 
 pause()
